@@ -222,10 +222,10 @@ class OLEDDisplay : public Stream {
     void drawFastImage(int16_t x, int16_t y, int16_t width, int16_t height, const uint8_t *image);
 
     // Draw a XBM
-    void drawXbm(uint8_t x, uint8_t y, File &file);
+		void drawXbm(int16_t x, int16_t y, int16_t width, int16_t height, const uint8_t *xbm);
 
 		//	Draw a WBMP
-    void drawWbmp(int16_t x, int16_t y, const uint8_t *xbm);
+		void drawWbmp(uint8_t x, uint8_t y, File &file);
 
 
     // Draw icon 16x16 xbm format

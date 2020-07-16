@@ -222,7 +222,11 @@ class OLEDDisplay : public Stream {
     void drawFastImage(int16_t x, int16_t y, int16_t width, int16_t height, const uint8_t *image);
 
     // Draw a XBM
-    void drawXbm(int16_t x, int16_t y, int16_t width, int16_t height, const uint8_t *xbm);
+    void drawXbm(uint8_t x, uint8_t y, File &file);
+
+		//	Draw a WBMP
+    void drawWbmp(int16_t x, int16_t y, int16_t width, int16_t height, const uint8_t *xbm);
+
 
     // Draw icon 16x16 xbm format
     void drawIco16x16(int16_t x, int16_t y, const char *ico, bool inverse = false);
@@ -275,7 +279,7 @@ class OLEDDisplay : public Stream {
     // normal brightness & contrast:  contrast = 100
     void setContrast(uint8_t contrast, uint8_t precharge = 241, uint8_t comdetect = 64);
 
-    // Convenience method to access 
+    // Convenience method to access
     void setBrightness(uint8_t);
 
     // Reset display rotation or mirroring
@@ -310,7 +314,7 @@ class OLEDDisplay : public Stream {
     // Implement needed function to be compatible with Print class
     size_t write(uint8_t c);
     size_t write(const char* s);
-	
+
     // Implement needed function to be compatible with Stream class
 #ifdef __MBED__
 	int _putc(int c);
@@ -350,7 +354,7 @@ class OLEDDisplay : public Stream {
 
 	// the header size of the buffer used, e.g. for the SPI command header
 	virtual int getBufferOffset(void) = 0;
-	
+
     // Send a command to the display (low level function)
     virtual void sendCommand(uint8_t com) {(void)com;};
 
@@ -366,7 +370,7 @@ class OLEDDisplay : public Stream {
     void inline drawInternal(int16_t xMove, int16_t yMove, int16_t width, int16_t height, const uint8_t *data, uint16_t offset, uint16_t bytesInData) __attribute__((always_inline));
 
     void drawStringInternal(int16_t xMove, int16_t yMove, char* text, uint16_t textLength, uint16_t textWidth);
-	
+
 	FontTableLookupFunction fontTableLookupFunction;
 };
 

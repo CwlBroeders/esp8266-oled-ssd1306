@@ -64,7 +64,7 @@ bool OLEDDisplay::allocateBuffer() {
   logBufferLine = 0;
   logBufferMaxLines = 0;
   logBuffer = NULL;
-	
+
   if (!this->connect()) {
     DEBUG_OLEDDISPLAY("[OLEDDISPLAY][init] Can't establish connection to display\n");
     return false;
@@ -84,7 +84,7 @@ bool OLEDDisplay::allocateBuffer() {
   if(this->buffer_back==NULL) {
     this->buffer_back = (uint8_t*) malloc((sizeof(uint8_t) * displayBufferSize) + getBufferOffset());
     this->buffer_back += getBufferOffset();
-  
+
     if(!this->buffer_back) {
       DEBUG_OLEDDISPLAY("[OLEDDISPLAY][init] Not enough memory to create back buffer\n");
       free(this->buffer - getBufferOffset());
@@ -450,6 +450,36 @@ void OLEDDisplay::drawXbm(int16_t xMove, int16_t yMove, int16_t width, int16_t h
     }
   }
 }
+
+void drawWbmp(uint8_t xMove, uint8_t yMove, File &file){
+  uint8_t data = file.read();               //  first byte 0 = wbmp
+					if(data != 0){
+						return;
+					}
+          data = file.read();               //  second byte 0 = monochrome
+					if(data != 0){
+						return;
+					}
+  uint8_t width = file.read();              //  3rd byte = img width max 255 px
+  uint8_t height = file.read();             //  4th byte = img height max 255 px
+
+  for(uint8_t y = 0; y < height; y++) {
+    for(uint8_t x = 0; x < width; x++ ) {
+      if (x & 7) {
+        data <<= 1; // Move a bit
+      } else {  // Read new data every 8 bit
+        data = file.read();
+      }
+      // if there is a bit draw it
+      if (data & 0x80) {
+        display.setPixel(xMove + x, yMove + y);
+      }
+    }
+  }
+}
+
+
+
 
 void OLEDDisplay::drawIco16x16(int16_t xMove, int16_t yMove, const char *ico, bool inverse) {
   uint16_t data;
@@ -821,7 +851,7 @@ int OLEDDisplay::_putc(int c) {
 		uint8_t textHeight = pgm_read_byte(fontData + HEIGHT_POS);
 		uint16_t lines =  this->displayHeight / textHeight;
 		uint16_t chars =   2 * (this->displayWidth / textHeight);
-		
+
 		if (this->displayHeight % textHeight)
 			lines++;
 		if (this->displayWidth % textHeight)

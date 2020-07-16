@@ -227,7 +227,6 @@ class OLEDDisplay : public Stream {
 		//	Draw a WBMP
 		void drawWbmp(uint8_t x, uint8_t y, File &file);
 
-
     // Draw icon 16x16 xbm format
     void drawIco16x16(int16_t x, int16_t y, const char *ico, bool inverse = false);
 
